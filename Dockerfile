@@ -1,5 +1,3 @@
-# This is a sample Dockerfile you can modify to deploy your own app based on face_recognition
-
 FROM python:3.4-slim
 
 RUN apt-get -y update
@@ -33,12 +31,8 @@ RUN cd ~ && \
     cd  dlib/ && \
     python3 setup.py install --yes USE_AVX_INSTRUCTIONS
 
-
-# The rest of this file just runs an example script.
-
 WORKDIR /app
 
-# If you wanted to use this Dockerfile to run your own app instead, maybe you would do this:
 ADD . /app
 
 RUN pip3 install -r requirements.txt

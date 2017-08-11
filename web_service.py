@@ -95,7 +95,13 @@ def index():
 
 @app.route('/v1/faces', methods=['GET', 'POST'])
 @limiter.limit('100 per day')
-def upload_image():
+def detect_faces():
+    # Check if url in query parameters
+    if request.method == 'GET' and 'url' in request.args:
+        url = request.args['url']
+        response = requests.get(url, stream=True);
+        return detect_faces_in_image(response.raw)
+
     # Check if a valid image file was uploaded
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -111,16 +117,11 @@ def upload_image():
             # The image file seems valid! Detect faces and return the result.
             return detect_faces_in_image(file)
 
-    if 'url' in request.args:
-        url = request.args['url']
-        response = requests.get(url, stream=True);
-        return detect_faces_in_image(response.raw)
-
 @app.errorhandler(429)
 def rate_limit_handler(e):
     return make_response(
-            jsonify(error="ratelimit exceeded %s" % e.description)
-            , 429
+        jsonify(error="ratelimit exceeded %s" % e.description)
+        , 429
     )
 
 if __name__ == "__main__":
