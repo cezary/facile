@@ -94,7 +94,8 @@ def index():
     return app.send_static_file('index.html')
 
 @app.route('/v1/faces', methods=['GET', 'POST'])
-@limiter.limit('100 per day')
+# @limiter.limit('100 per day')
+@limiter.exempt
 def detect_faces():
     # Check if url in query parameters
     if request.method == 'GET' and 'url' in request.args:
